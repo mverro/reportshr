@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+        <template id="assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="buma_hr_reports/static/src/js/employee_reports.js"/>
+        
+            </xpath>
+        </template>
+    </data>
+</odoo>

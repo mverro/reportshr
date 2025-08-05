@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_employee_reports" model="ir.actions.client">
+        <field name="name">Employee Report</field>
+        <field name="tag">hr_em_r</field>
+    </record>
+    
+    <menuitem 
+    id="menu_employee_reports" 
+    action="action_employee_reports"
+    name="Employee Report" 
+    parent="hr_recruitment.report_hr_recruitment"/>
+
+</odoo>

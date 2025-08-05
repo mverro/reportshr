@@ -1,0 +1,361 @@
+<templates>
+    <!-- MAIN -->
+    <t t-name="HR_report_employee">
+        <div class="">
+            <div class="">
+                <h1 style="padding:10px" id="report_title">
+                    Employee Report
+                </h1>
+
+            </div>
+
+            <div>
+                <div class="filter_view_tb" style="overflow: unset;"></div>
+            </div>
+            <br></br>
+            <div>
+                <div class="table_view_tb" style="right:20px;"></div>
+            </div>
+        </div>
+    </t>
+
+    <!-- FILTER -->
+    <t t-name="HR_filter">
+
+        <div class="" style="position: relative;">
+            <br></br>
+            <div class="sub_container_right"
+                style="width:50%;height:3%;right:0px;top:0px;position: absolute;">
+                <div>
+                    <button class="btn btn-primary o_filters_toggler" id="o_equip_filter_dropdown"
+                        style="position: absolute; right: 35.63%; top: 17.78%; bottom: 79.17%; height: 30px; padding: 0; width: 20%;">
+                        <span style="align-items: center; justify-content: center;">
+                            <i class="fa fa-search mr-2" style="font-size: 17px !important;" />
+                        </span>
+                        <span style="font-size: 17px;">&#160;Filter</span>
+                    </button>
+
+                    <div class="filter_content"
+                        style="position:relative; top:43px; left:2%; width:67%; display:none; text-align:right; background-color: white; filter: drop-shadow(0px 0px 16px rgba(0, 0, 0, 0.161)); padding: 5px;">
+                        <div style="text-align:center;">
+                            <button type="button" id="apply_filter" class="btn btn-primary"
+                                style="padding: 0; height: 25px; width: 25%;"
+                            >
+                                Apply
+                            </button>
+                        </div>
+                        <br />
+
+                        <!-- Filter Date -->
+                        <div class="time_range" style="">
+                            <div class="btn-group o_account_reports_date-filter" style="width:100%;">
+                                <a type="button" class="dropdown-toggle dropdown-item"
+                                    data-toggle="dropdown" style="width:100%;">
+                                    <span class="fa fa-calendar filter-content" style="float: left;"></span>
+                                    <span class="filter-content" style="float: left;">&#160;Date: </span>
+                                    <span class="date_caret" />
+                                </a>
+                                <ul class="dropdown-menu o_filters_menu o_date_filter" role="menu"
+                                    style="width:100%;">
+                                    <li class="filter_date" title="Today" data-value="today">
+                                        <a class="dropdown-item">Today</a>
+                                    </li>
+                                    <li class="filter_date" title="This Month"
+                                        data-value="this_month">
+                                        <a class="dropdown-item">This Month</a>
+                                    </li>
+                                    <li class="filter_date" title="This Quarter"
+                                        data-value="this_quarter">
+                                        <a class="dropdown-item">This Quarter</a>
+                                    </li>
+                                    <li class="filter_date" title="This Financial Year"
+                                        data-value="this_financial_year">
+                                        <a class="dropdown-item">This Financial Year</a>
+                                    </li>
+                                    <li role="separator" class="dropdown-divider"></li>
+                                    <li class="filter_date" title="Last Month"
+                                        data-value="last_month">
+                                        <a class="dropdown-item">Last Month</a>
+                                    </li>
+                                    <li class="filter_date" title="Last Quarter"
+                                        data-value="last_quarter">
+                                        <a class="dropdown-item">Last Quarter</a>
+                                    </li>
+                                    <li class="filter_date" title="Last Financial Year"
+                                        data-value="last_year">
+                                        <a class="dropdown-item">Last Financial Year</a>
+                                    </li>
+                                    <li role="separator" class="dropdown-divider"></li>
+                                    <div class="o_generator_menu">
+                                        <button type="button" aria-expanded="false"
+                                            class="o_add_custom_filter dropdown-item">Custom</button>
+                                    </div>
+                                    <li class="o_account_reports_custom-dates d-none"
+                                        data-value='custom' style='margin-top: 5px;'>
+                                        <div class="o_filter_condition dropdown-item-text">
+                                            <div class="">
+                                                <div class="" aria-atomic="true" id="">
+                                                    <input class="dropdown-item" type="date"
+                                                        id="date_from"></input>
+                                                </div>
+                                            </div>
+                                            <label>
+                                                <b>To Date :</b>
+                                            </label>
+                                            <div class="">
+                                                <div class="" aria-atomic="true" id="">
+                                                    <input class="dropdown-item" type="date"
+                                                        id="date_to"></input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Filter Comparison -->
+                        <div class="time_range" style="width:100%;">
+                            <div class="btn-group o_account_reports_date-filter" style="width:100%;">
+                                <a type="button" class="dropdown-toggle dropdown-item"
+                                    data-toggle="dropdown" style="width:100%;">
+                                    <span class="fa fa-calendar filter-content" style="float: left;"></span>
+                                    <span class="filter-content" style="float: left;">
+                                        &#160;Comparison: </span>
+                                    <span class="date_caret_comp" />
+                                </a>
+                                <ul class="dropdown-menu o_filters_comp_menu o_date_filter_comp"
+                                    role="menu" style="width:100%;">
+                                    <li class="filter_category" title="No Comparison"
+                                        data-value="no_comparison">
+                                        <a class="dropdown-item">No Comparison</a>
+                                    </li>
+                                    <li role="separator" class="dropdown-divider"></li>
+                                    <div class="o_generator_menu">
+                                        <button type="button" aria-expanded="false"
+                                            class="o_add_custom_filter_prev dropdown-item">Previous
+                                            Period</button>
+                                    </div>
+                                    <li class="o_account_reports_custom-prev d-none"
+                                        data-value='prev' style='margin-top: 5px;'>
+                                        <div class="o_filter_condition dropdown-item-text">
+                                            <div class="">
+                                                <div class="" aria-atomic="true" id="">
+                                                    <span>Number of Period:</span>
+                                                    <input type="text" id="prev" class="o_input"></input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li role="separator" class="dropdown-divider"></li>
+                                    <div class="o_generator_menu">
+                                        <button type="button" aria-expanded="false"
+                                            class="o_add_custom_filter_last dropdown-item">Same
+                                            Period Last Year:</button>
+                                    </div>
+                                    <li class="o_account_reports_custom-last d-none"
+                                        data-value='last' style='margin-top: 5px;'>
+                                        <div class="o_filter_condition dropdown-item-text">
+                                            <div class="">
+                                                <div class="" aria-atomic="true" id="">
+                                                    <span>Number of Period:</span>
+                                                    <input type="text" id="last" class="o_input"></input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Excel Report -->
+                    <button type="button" class="btn btn-primary" id="xlsx"
+                        style="position: absolute; right: 15.42%; top: 17.78%; bottom: 79.17%; height: 30px;">
+                        Download XLSX
+                    </button>
+
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <hr />
+
+            <!-- Penanda Status Filter Aktif -->
+            <div class="active-filter" style="margin-left: 2%; display: none;">
+                <style>
+                    .a-active-filter {
+                    border: 1px solid black;
+                    border-radius: 25px;
+                    padding: 0 10px 0 10px;
+                    margin-right:5px;
+                    display: none;
+                    }
+                </style>
+
+                <span class="fa fa-circle" style="color: lightgreen;"></span>
+                <span class="">&#160;Active filter</span>
+                <br />
+
+                <a class="date-filter a-active-filter">
+                    <span class="fa fa-calendar" />
+                    <t>Date: </t>
+                    <span class="date_caret" />
+                </a>
+
+                <a class="comparison-filter a-active-filter">
+                    <span class="fa fa-calendar"></span>
+                    <span>Comparison: </span>
+                    <span class="date_caret_comp"></span>
+                </a>
+
+            </div>
+            <br />
+
+            <!-- Clear Filter -->
+            <div class="clear-filter" style="margin-left: 2%; display: none;">
+                <style>
+                    .btn-clear-filter {
+                    border: 1px solid black !important;
+                    border-radius: 25px !important;
+                    padding: 0 10px 0 10px;
+                    margin-right:5px;
+                    color: white !important;
+                    background-color: #707070 !important;
+                    }
+                </style>
+
+                <button class="btn-clear-filter btn-secondary">
+                    <t>Clear All Filter</t>
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <!-- TABLE -->
+    <t t-name="HR_detail">
+    <div>
+        <style>
+            .table-responsive {
+                width: 100%;
+                overflow-x: auto;
+                /* Biar ada sedikit bayangan waktu discroll */
+                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            }
+
+            .pretty-table {
+                border-collapse: separate;
+                border-spacing: 0;
+                width: 100%;
+                background: #fff;
+                box-shadow: 0 6px 24px 0 rgba(0,0,0,0.07);
+                border-radius: 14px;
+                overflow: hidden;
+                font-size: 0.93rem; 
+                min-width: 1200px; 
+            }
+
+            .pretty-table thead th {
+                background: #1c1c1c;
+                color: #fff;
+                font-weight: 700;
+                letter-spacing: .03em;
+                padding: 10px 8px;      
+                border-bottom: 2px solid #696a6b;
+                text-align: left;
+                font-size: 0.98rem;     
+                white-space: nowrap; 
+            }
+
+            .pretty-table th, .pretty-table td {
+                padding: 9px 7px;       
+                border-right: 1px solid #e5e7eb;
+                word-break: break-word;
+                white-space: nowrap; 
+            }
+
+            .pretty-table th:last-child,
+            .pretty-table td:last-child {
+                border-right: none;
+            }
+
+            .pretty-table tbody tr:nth-child(odd) {
+                background: #f1f5f9;
+            }
+            .pretty-table tbody tr:nth-child(even) {
+                background: #fff;
+            }
+
+            .pretty-table tbody tr:hover {
+                background: #deded7;
+                transition: background 0.18s;
+            }
+
+            .pretty-table tbody td {
+                color: #6d7062;
+                font-size: 0.93rem;
+                vertical-align: top;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .pretty-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+        </style>
+        <div class="table-responsive">
+            <table class="pretty-table">
+                <thead>
+                    <tr>
+                        <th>Positions</th>
+                        <th>Department</th>
+                        <th>Project</th>
+                        <th>Point Of Hire</th>
+                        <th>Candidate Name</th>
+                        <th>Psikotes</th>
+                        <th>Interview</th>
+                        <th>Offering Letter</th>
+                        <th>MCU Location</th>
+                        <th>Initial MCU Date</th>
+                        <th>Last MCU Date</th>
+                        <th>MCU Result</th>
+                        <th>PKWT / Kontrak Kerja</th>
+                        <th>Training Pre Mobilization</th>
+                        <th>Induction</th>
+                        <th>Notes</th>
+                        <th>Target Date</th>
+                        <th>Actual Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</t>
+
+
+    
+</templates>
