@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_employee_report,access_hr_employee_report,model_hr_employee_report,,1,1,1,1
-access_hr_pipeline_reports,access_hr_pipeline_reports,model_hr_pipeline_reports,,1,1,1,1

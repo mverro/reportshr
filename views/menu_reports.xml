@@ -2,9 +2,9 @@
 <odoo>
     <record id="action_employee_reports" model="ir.actions.client">
         <field name="name">Employee Report</field>
-        <field name="tag">hr_em_r</field>
+        <field name="tag">employee_reports</field>
     </record>
-    
+
     <menuitem 
     id="menu_employee_reports" 
     action="action_employee_reports"

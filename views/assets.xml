@@ -3,8 +3,18 @@
         <template id="assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="buma_hr_reports/static/src/js/employee_reports.js"/>
-        
+                <link rel="stylesheet" type="text/css" href="buma_hr_reports/static/src/css/reports.css"/>
             </xpath>
         </template>
+
+        <record id="employee_report_xlsx" model="ir.actions.report">
+            <field name="name">Applicant Report XLSX</field>
+            <field name="model">hr.employee.report</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">reportshr.employee_report_xlsx</field>
+            <field name="report_file">reportshr.employee_report_xlsx</field>
+            <field name="binding_model_id" ref="model_hr_employee_report"/>
+            <field name="binding_type">report</field>
+        </record>
     </data>
 </odoo>

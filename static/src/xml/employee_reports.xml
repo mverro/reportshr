@@ -1,361 +1,305 @@
-<templates>
-    <!-- MAIN -->
-    <t t-name="HR_report_employee">
-        <div class="">
-            <div class="">
-                <h1 style="padding:10px" id="report_title">
-                    Employee Report
-                </h1>
-
-            </div>
-
-            <div>
-                <div class="filter_view_tb" style="overflow: unset;"></div>
-            </div>
-            <br></br>
-            <div>
-                <div class="table_view_tb" style="right:20px;"></div>
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="buma_hr_reports.EmployeeReports">
+        <div class="o_employee_reports_wrapper" style="padding: 20px; background-color: #f8f9fa; min-height: 100vh;">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="o_page_header mb-4">
+                            <h1 class="o_page_title" style="color: #2c3e50; font-weight: 600; margin-bottom: 10px;">
+                                <i class="fa fa-users mr-2" style="color: #6c757d;"></i>Employee Reports
+                            </h1>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="o_employee_reports">
+                    <div class="o_filter_section mb-4"/>
+                    <div class="o_content_section mb-4"/>
+                    <div class="o_pagination_section"/>
+                </div>
             </div>
         </div>
     </t>
 
-    <!-- FILTER -->
-    <t t-name="HR_filter">
-
-        <div class="" style="position: relative;">
-            <br></br>
-            <div class="sub_container_right"
-                style="width:50%;height:3%;right:0px;top:0px;position: absolute;">
-                <div>
-                    <button class="btn btn-primary o_filters_toggler" id="o_equip_filter_dropdown"
-                        style="position: absolute; right: 35.63%; top: 17.78%; bottom: 79.17%; height: 30px; padding: 0; width: 20%;">
-                        <span style="align-items: center; justify-content: center;">
-                            <i class="fa fa-search mr-2" style="font-size: 17px !important;" />
-                        </span>
-                        <span style="font-size: 17px;">&#160;Filter</span>
-                    </button>
-
-                    <div class="filter_content"
-                        style="position:relative; top:43px; left:2%; width:67%; display:none; text-align:right; background-color: white; filter: drop-shadow(0px 0px 16px rgba(0, 0, 0, 0.161)); padding: 5px;">
-                        <div style="text-align:center;">
-                            <button type="button" id="apply_filter" class="btn btn-primary"
-                                style="padding: 0; height: 25px; width: 25%;"
-                            >
-                                Apply
+    <t t-name="buma_hr_reports.Filters">
+        <div class="o_filters_container">
+            <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
+                <div class="card-body" style="padding: 15px;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="mb-2 mb-md-0">
+                            <h5 class="mb-0" style="color: #2c3e50; font-weight: 600;">
+                                <i class="fa fa-table mr-2" style="color: #6c757d;"></i>Employee Reports
+                            </h5>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            <button type="button" class="btn btn-outline-primary o_toggle_filter mr-2 mb-2" 
+                                    
+                                    style="border-radius: 8px; padding: 10px 20px; font-weight: 500; min-width: 100px; border-color: #6c757d; color: #6c757d;">
+                                <i class="fa fa-filter mr-1"></i>Filter
+                            </button>
+                            <button type="button" class="btn btn-success o_export_xlsx mb-2" 
+                                    style="border-radius: 8px; padding: 10px 20px; font-weight: 500; min-width: 120px; background-color: #56ab2f; border-color: #56ab2f; color: white;">
+                                <i class="fa fa-download mr-1"></i>Export XLSX
                             </button>
                         </div>
-                        <br />
-
-                        <!-- Filter Date -->
-                        <div class="time_range" style="">
-                            <div class="btn-group o_account_reports_date-filter" style="width:100%;">
-                                <a type="button" class="dropdown-toggle dropdown-item"
-                                    data-toggle="dropdown" style="width:100%;">
-                                    <span class="fa fa-calendar filter-content" style="float: left;"></span>
-                                    <span class="filter-content" style="float: left;">&#160;Date: </span>
-                                    <span class="date_caret" />
-                                </a>
-                                <ul class="dropdown-menu o_filters_menu o_date_filter" role="menu"
-                                    style="width:100%;">
-                                    <li class="filter_date" title="Today" data-value="today">
-                                        <a class="dropdown-item">Today</a>
-                                    </li>
-                                    <li class="filter_date" title="This Month"
-                                        data-value="this_month">
-                                        <a class="dropdown-item">This Month</a>
-                                    </li>
-                                    <li class="filter_date" title="This Quarter"
-                                        data-value="this_quarter">
-                                        <a class="dropdown-item">This Quarter</a>
-                                    </li>
-                                    <li class="filter_date" title="This Financial Year"
-                                        data-value="this_financial_year">
-                                        <a class="dropdown-item">This Financial Year</a>
-                                    </li>
-                                    <li role="separator" class="dropdown-divider"></li>
-                                    <li class="filter_date" title="Last Month"
-                                        data-value="last_month">
-                                        <a class="dropdown-item">Last Month</a>
-                                    </li>
-                                    <li class="filter_date" title="Last Quarter"
-                                        data-value="last_quarter">
-                                        <a class="dropdown-item">Last Quarter</a>
-                                    </li>
-                                    <li class="filter_date" title="Last Financial Year"
-                                        data-value="last_year">
-                                        <a class="dropdown-item">Last Financial Year</a>
-                                    </li>
-                                    <li role="separator" class="dropdown-divider"></li>
-                                    <div class="o_generator_menu">
-                                        <button type="button" aria-expanded="false"
-                                            class="o_add_custom_filter dropdown-item">Custom</button>
-                                    </div>
-                                    <li class="o_account_reports_custom-dates d-none"
-                                        data-value='custom' style='margin-top: 5px;'>
-                                        <div class="o_filter_condition dropdown-item-text">
-                                            <div class="">
-                                                <div class="" aria-atomic="true" id="">
-                                                    <input class="dropdown-item" type="date"
-                                                        id="date_from"></input>
-                                                </div>
-                                            </div>
-                                            <label>
-                                                <b>To Date :</b>
-                                            </label>
-                                            <div class="">
-                                                <div class="" aria-atomic="true" id="">
-                                                    <input class="dropdown-item" type="date"
-                                                        id="date_to"></input>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Filter Comparison -->
-                        <div class="time_range" style="width:100%;">
-                            <div class="btn-group o_account_reports_date-filter" style="width:100%;">
-                                <a type="button" class="dropdown-toggle dropdown-item"
-                                    data-toggle="dropdown" style="width:100%;">
-                                    <span class="fa fa-calendar filter-content" style="float: left;"></span>
-                                    <span class="filter-content" style="float: left;">
-                                        &#160;Comparison: </span>
-                                    <span class="date_caret_comp" />
-                                </a>
-                                <ul class="dropdown-menu o_filters_comp_menu o_date_filter_comp"
-                                    role="menu" style="width:100%;">
-                                    <li class="filter_category" title="No Comparison"
-                                        data-value="no_comparison">
-                                        <a class="dropdown-item">No Comparison</a>
-                                    </li>
-                                    <li role="separator" class="dropdown-divider"></li>
-                                    <div class="o_generator_menu">
-                                        <button type="button" aria-expanded="false"
-                                            class="o_add_custom_filter_prev dropdown-item">Previous
-                                            Period</button>
-                                    </div>
-                                    <li class="o_account_reports_custom-prev d-none"
-                                        data-value='prev' style='margin-top: 5px;'>
-                                        <div class="o_filter_condition dropdown-item-text">
-                                            <div class="">
-                                                <div class="" aria-atomic="true" id="">
-                                                    <span>Number of Period:</span>
-                                                    <input type="text" id="prev" class="o_input"></input>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li role="separator" class="dropdown-divider"></li>
-                                    <div class="o_generator_menu">
-                                        <button type="button" aria-expanded="false"
-                                            class="o_add_custom_filter_last dropdown-item">Same
-                                            Period Last Year:</button>
-                                    </div>
-                                    <li class="o_account_reports_custom-last d-none"
-                                        data-value='last' style='margin-top: 5px;'>
-                                        <div class="o_filter_condition dropdown-item-text">
-                                            <div class="">
-                                                <div class="" aria-atomic="true" id="">
-                                                    <span>Number of Period:</span>
-                                                    <input type="text" id="last" class="o_input"></input>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-
                     </div>
-
-                    <!-- Excel Report -->
-                    <button type="button" class="btn btn-primary" id="xlsx"
-                        style="position: absolute; right: 15.42%; top: 17.78%; bottom: 79.17%; height: 30px;">
-                        Download XLSX
-                    </button>
-
                 </div>
             </div>
 
-            <br />
-            <br />
-            <hr />
-
-            <!-- Penanda Status Filter Aktif -->
-            <div class="active-filter" style="margin-left: 2%; display: none;">
-                <style>
-                    .a-active-filter {
-                    border: 1px solid black;
-                    border-radius: 25px;
-                    padding: 0 10px 0 10px;
-                    margin-right:5px;
-                    display: none;
-                    }
-                </style>
-
-                <span class="fa fa-circle" style="color: lightgreen;"></span>
-                <span class="">&#160;Active filter</span>
-                <br />
-
-                <a class="date-filter a-active-filter">
-                    <span class="fa fa-calendar" />
-                    <t>Date: </t>
-                    <span class="date_caret" />
-                </a>
-
-                <a class="comparison-filter a-active-filter">
-                    <span class="fa fa-calendar"></span>
-                    <span>Comparison: </span>
-                    <span class="date_caret_comp"></span>
-                </a>
-
-            </div>
-            <br />
-
-            <!-- Clear Filter -->
-            <div class="clear-filter" style="margin-left: 2%; display: none;">
-                <style>
-                    .btn-clear-filter {
-                    border: 1px solid black !important;
-                    border-radius: 25px !important;
-                    padding: 0 10px 0 10px;
-                    margin-right:5px;
-                    color: white !important;
-                    background-color: #707070 !important;
-                    }
-                </style>
-
-                <button class="btn-clear-filter btn-secondary">
-                    <t>Clear All Filter</t>
-                </button>
+            <div class="card shadow-sm border-0 o_filter_panel" id="filterPanel" style="border-radius: 12px; display: none;">
+                <div class="card-header" style="background-color: #6c757d; color: white; border-radius: 12px 12px 0 0; padding: 20px;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-filter mr-2" style="font-size: 18px;"></i>
+                            <h4 class="mb-0" style="font-weight: 500; color: white;">Filter Options</h4>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-light"  style="border-radius: 6px;">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 25px;">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight: 600; color: #495057; margin-bottom: 8px;">
+                                    <i class="fa fa-briefcase mr-1" style="color: #6c757d;"></i>Position
+                                </label>
+                                <div class="o_field_many2manytags">
+                                    <select class="form-control o_position_filter" multiple="multiple" id="position_select" style="border-radius: 8px; border-color: #dee2e6;">
+                                        <t t-foreach="filterValues.positions" t-as="position">
+                                            <option t-att-value="position.id">
+                                                <t t-esc="position.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight: 600; color: #495057; margin-bottom: 8px;">
+                                    <i class="fa fa-building mr-1" style="color: #6c757d;"></i>Department
+                                </label>
+                                <div class="o_field_many2manytags">
+                                    <select class="form-control o_department_filter" multiple="multiple" id="department_select" style="border-radius: 8px; border-color: #dee2e6;">
+                                        <t t-foreach="filterValues.departments" t-as="department">
+                                            <option t-att-value="department.id">
+                                                <t t-esc="department.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight: 600; color: #495057; margin-bottom: 8px;">
+                                    <i class="fa fa-map-marker mr-1" style="color: #6c757d;"></i>Project
+                                </label>
+                                <div class="o_field_many2manytags">
+                                    <select class="form-control o_project_filter" multiple="multiple" id="project_select" style="border-radius: 8px; border-color: #dee2e6;">
+                                        <t t-foreach="filterValues.projects" t-as="project">
+                                            <option t-att-value="project.id">
+                                                <t t-esc="project.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight: 600; color: #495057; margin-bottom: 8px;">
+                                    <i class="fa fa-handshake-o mr-1" style="color: #6c757d;"></i>Point of Hire
+                                </label>
+                                <div class="o_field_many2manytags">
+                                    <select class="form-control o_point_of_hire_filter" multiple="multiple" id="poh_select" style="border-radius: 8px; border-color: #dee2e6;">
+                                        <t t-foreach="filterValues.point_of_hires" t-as="poh">
+                                            <option t-att-value="poh.id">
+                                                <t t-esc="poh.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row align-items-end" style="margin-top: 20px;">
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight: 600; color: #495057; margin-bottom: 8px;">
+                                    <i class="fa fa-user mr-1" style="color: #6c757d;"></i>Candidate Name
+                                </label>
+                                <input type="text" 
+                                    class="form-control o_candidate_name_filter" 
+                                    placeholder="Enter candidate name..." 
+                                    style="border-radius: 8px; padding: 10px 15px; border-color: #dee2e6;"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-md-6 mb-3">
+                            <div class="d-flex justify-content-end flex-wrap">
+                                <button type="button" class="btn btn-outline-secondary o_reset_filter mr-2 mb-2" 
+                                        style="border-radius: 8px; padding: 10px 20px; font-weight: 500; min-width: 100px; border-color: #6c757d; color: #6c757d;">
+                                    <i class="fa fa-refresh mr-1"></i>Clear Filter
+                                </button>
+                                <button type="button" class="btn btn-primary o_apply_filter mr-2 mb-2" 
+                                        style="border-radius: 8px; padding: 10px 20px; font-weight: 500; min-width: 100px; background-color: #667eea; border-color: #667eea; color: white;">
+                                    <i class="fa fa-search mr-1"></i>Apply Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </t>
 
-    <!-- TABLE -->
-    <t t-name="HR_detail">
-    <div>
-        <style>
-            .table-responsive {
-                width: 100%;
-                overflow-x: auto;
-                /* Biar ada sedikit bayangan waktu discroll */
-                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-            }
-
-            .pretty-table {
-                border-collapse: separate;
-                border-spacing: 0;
-                width: 100%;
-                background: #fff;
-                box-shadow: 0 6px 24px 0 rgba(0,0,0,0.07);
-                border-radius: 14px;
-                overflow: hidden;
-                font-size: 0.93rem; 
-                min-width: 1200px; 
-            }
-
-            .pretty-table thead th {
-                background: #1c1c1c;
-                color: #fff;
-                font-weight: 700;
-                letter-spacing: .03em;
-                padding: 10px 8px;      
-                border-bottom: 2px solid #696a6b;
-                text-align: left;
-                font-size: 0.98rem;     
-                white-space: nowrap; 
-            }
-
-            .pretty-table th, .pretty-table td {
-                padding: 9px 7px;       
-                border-right: 1px solid #e5e7eb;
-                word-break: break-word;
-                white-space: nowrap; 
-            }
-
-            .pretty-table th:last-child,
-            .pretty-table td:last-child {
-                border-right: none;
-            }
-
-            .pretty-table tbody tr:nth-child(odd) {
-                background: #f1f5f9;
-            }
-            .pretty-table tbody tr:nth-child(even) {
-                background: #fff;
-            }
-
-            .pretty-table tbody tr:hover {
-                background: #deded7;
-                transition: background 0.18s;
-            }
-
-            .pretty-table tbody td {
-                color: #6d7062;
-                font-size: 0.93rem;
-                vertical-align: top;
-                border-bottom: 1px solid #e5e7eb;
-            }
-
-            .pretty-table tbody tr:last-child td {
-                border-bottom: none;
-            }
-        </style>
-        <div class="table-responsive">
-            <table class="pretty-table">
-                <thead>
-                    <tr>
-                        <th>Positions</th>
-                        <th>Department</th>
-                        <th>Project</th>
-                        <th>Point Of Hire</th>
-                        <th>Candidate Name</th>
-                        <th>Psikotes</th>
-                        <th>Interview</th>
-                        <th>Offering Letter</th>
-                        <th>MCU Location</th>
-                        <th>Initial MCU Date</th>
-                        <th>Last MCU Date</th>
-                        <th>MCU Result</th>
-                        <th>PKWT / Kontrak Kerja</th>
-                        <th>Training Pre Mobilization</th>
-                        <th>Induction</th>
-                        <th>Notes</th>
-                        <th>Target Date</th>
-                        <th>Actual Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>...</td>
-                    </tr>
-                </tbody>
-            </table>
+    <t t-name="buma_hr_reports.Content">
+    <div class="o_content_container">
+        <div class="card shadow-sm border-0" style="border-radius: 12px;">
+            <div class="card-header" style="background-color: #fff; border-bottom: 2px solid #6c757d; border-radius: 12px 12px 0 0; padding: 20px;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1" style="color: #2c3e50; font-weight: 600;">
+                            <i class="fa fa-table mr-2" style="color: #6c757d;"></i>Report Results
+                        </h5>
+                        <span class="text-muted" style="font-size: 14px;">
+                            Showing <strong><t t-esc="startRecord"/></strong> to <strong><t t-esc="endRecord"/></strong> of <strong><t t-esc="totalRecords"/></strong> entries
+                        </span>
+                    </div>
+                    <div class="o_record_info badge" style="font-size: 12px; padding: 8px 12px; background-color: #6c757d; color: white;">
+                        <i class="fa fa-info-circle mr-1"></i>
+                        Page <t t-esc="currentPage"/> of <t t-esc="totalPages"/>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" style="padding: 0; border-radius: 0 0 12px 12px;">
+                
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;" id="tableContainer">
+                    <table class="table table-hover mb-0" style="border-radius: 0 0 12px 12px;">
+                        <thead style="background-color: #6c757d; color: white; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <tr>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 200px; background-color: #6c757d;">Position</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 150px; background-color: #6c757d;">Department</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 100px; background-color: #6c757d;">Project</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 100px; background-color: #6c757d;">Point of Hire</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 250px; background-color: #6c757d;">Candidate Name</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 90px; background-color: #6c757d;">Psikotest</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 90px; background-color: #6c757d;">Interview</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 100px; background-color: #6c757d;">Offering Letter</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 110px; background-color: #6c757d;">MCU Location</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 110px; background-color: #6c757d;">Initial MCU Date</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 100px; background-color: #6c757d;">Last MCU Date</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 90px; background-color: #6c757d;">MCU Result</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 120px; background-color: #6c757d;">PKWT / Kontrak Kerja</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 130px; background-color: #6c757d;">Training Pre Mobilization</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 90px; background-color: #6c757d;">Induction</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 80px; background-color: #6c757d;">Notes</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 100px; background-color: #6c757d;">Target Date</th>
+                                <th style="font-weight: 600; border: none; padding: 15px; white-space: nowrap; min-width: 100px; background-color: #6c757d;">Actual Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="data" t-as="row">
+                                <tr style="border-bottom: 1px solid #e9ecef;">
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.position"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.department"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.project"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.point_of_hire"/></td>
+                                    <td style="padding: 12px 15px; color: #495057; font-weight: 500;"><t t-esc="row.candidate_name"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.psikotest"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.interview"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.offering_letter"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.mcu_location"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.initial_mcu_date"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.last_mcu_date"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.mcu_result"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.pkwt"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.training_pre_mobilization"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.induction"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.notes"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.target_date"/></td>
+                                    <td style="padding: 12px 15px; color: #495057;"><t t-esc="row.actual_date"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="!data or data.length == 0">
+                                <tr>
+                                    <td colspan="18" class="text-center" style="padding: 40px; color: #6c757d;">
+                                        <i class="fa fa-inbox" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5; color: #6c757d;"></i>
+                                        <div style="font-size: 16px; font-weight: 500;">No data found</div>
+                                        <div style="font-size: 14px; margin-top: 5px;">Try adjusting your filters to see more results</div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </t>
 
-
-    
+    <t t-name="buma_hr_reports.Pagination">
+        <div class="o_pagination_container">
+            <div class="card shadow-sm border-0" style="border-radius: 12px;" t-if="totalPages > 1">
+                <div class="card-body" style="padding: 20px;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="mb-2 mb-md-0">
+                            <span class="text-muted" style="font-size: 14px;">
+                                <i class="fa fa-info-circle mr-1" style="color: #6c757d;"></i>
+                                Showing <strong style="color: #495057;"><t t-esc="startRecord"/></strong> to 
+                                <strong style="color: #495057;"><t t-esc="endRecord"/></strong> of 
+                                <strong style="color: #495057;"><t t-esc="totalRecords"/></strong> total entries
+                            </span>
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-rounded mb-0" style="--bs-pagination-border-radius: 8px;">
+                                <li t-att-class="'page-item' + (hasPrevious ? '' : ' disabled')">
+                                    <a class="page-link o_pagination_prev" href="#" t-if="hasPrevious" 
+                                       style="border-radius: 8px 0 0 8px; border-right: none; padding: 10px 15px; color: #6c757d; border-color: #dee2e6;">
+                                        <i class="fa fa-chevron-left"></i> Previous
+                                    </a>
+                                    <span class="page-link" t-if="!hasPrevious" 
+                                          style="border-radius: 8px 0 0 8px; border-right: none; padding: 10px 15px; background-color: #f8f9fa; color: #6c757d;">
+                                        <i class="fa fa-chevron-left"></i> Previous
+                                    </span>
+                                </li>
+                                <t t-foreach="pages" t-as="page">
+                                    <li t-att-class="'page-item' + (page.current ? ' active' : '')">
+                                        <a class="page-link o_pagination_page" href="#" t-att-data-page="page.number"
+                                           t-att-style="'padding: 10px 15px; border-right: none; border-color: #dee2e6; color: #6c757d; ' + (page.current ? 'background-color: #6c757d; border-color: #6c757d; color: white;' : '')">
+                                            <t t-esc="page.number"/>
+                                        </a>
+                                    </li>
+                                </t>
+                                <li t-att-class="'page-item' + (hasNext ? '' : ' disabled')">
+                                    <a class="page-link o_pagination_next" href="#" t-if="hasNext" 
+                                       style="border-radius: 0 8px 8px 0; padding: 10px 15px; color: #6c757d; border-color: #dee2e6;">
+                                        Next <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                    <span class="page-link" t-if="!hasNext" 
+                                          style="border-radius: 0 8px 8px 0; padding: 10px 15px; background-color: #f8f9fa; color: #6c757d;">
+                                        Next <i class="fa fa-chevron-right"></i>
+                                    </span>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm border-0" style="border-radius: 12px;" t-if="totalPages &lt;= 1 and totalRecords > 0">
+                <div class="card-body text-center" style="padding: 15px;">
+                    <span class="text-muted" style="font-size: 14px;">
+                        <i class="fa fa-info-circle mr-1" style="color: #6c757d;"></i>
+                        Showing all <strong style="color: #495057;"><t t-esc="totalRecords"/></strong> entries
+                    </span>
+                </div>
+            </div>
+        </div>
+    </t>
 </templates>

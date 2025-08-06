@@ -1,385 +1,288 @@
-odoo.define('buma_hr_reports.employee_report', function(require){
-    'use strict';
+odoo.define('buma_hr_reports.employee_reports', function (require) {
+    "use strict";
+
     var AbstractAction = require('web.AbstractAction');
     var core = require('web.core');
-    var field_utils = require('web.field_utils');
-    var rpc = require('web.rpc');
-    var session = require('web.session');
-    var utils = require('web.utils');
     var QWeb = core.qweb;
-    var _t = core._t;
-    var reportdata = [];
-    var sessionStorage = window.sessionStorage;
+    var rpc = require('web.rpc');
+    var framework = require('web.framework');
 
-    window.click_num = 0;
-    var employeeReports = AbstractAction.extend({
-        template: 'HR_report_employee',
-        events:{
-            'click #apply_filter': 'apply_filter',
-            'click #xlsx': 'print_xlsx',
-            'click .filter_category': '_onFilterCategory',
-            'click .filter_date': '_onFilterDate',
-            'click .o_add_custom_filter': '_onCustomFilter',
-            'click .o_add_custom_filter_prev': '_onPrevFilter',
-            'click .o_add_custom_filter_last': '_onLastFilter',
-            'click #o_equip_filter_dropdown': '_onClickFilter',
-            'click .clear-filter': 'clear_filter',
-            'click .cf-line': 'show_drop_down',
-            'click #collapse-button': 'collapse_all',
-            'click': '_onAnyWhereClick',
-            'click .btn-sort-line': 'onClickSortLine',
+    var EmployeeReports = AbstractAction.extend({
+        template: 'buma_hr_reports.EmployeeReports',
+        events: {
+            'click .o_apply_filter': '_onApplyFilter',
+            'click .o_export_xlsx': '_onExportXlsx',
+            'click .o_reset_filter': '_onResetFilter',
+            'click .o_pagination_prev': '_onPrevPage',
+            'click .o_pagination_next': '_onNextPage',
+            'click .o_pagination_page': '_onGoToPage',
         },
 
         init: function(parent, action) {
-            this._super(parent, action);
-            this.currency=action.currency;
-            this.report_lines = action.report_lines;
-            this.categories = 'all';
-            this.wizard_id = action.context.wizard | null;
+            this._super.apply(this, arguments);
+            this.actionManager = parent;
+            this.filters = {};
+            this.currentPage = 1;
+            this.pageSize = 20;
+            this.totalRecords = 0;
+            this.totalPages = 0;
         },
 
         start: function() {
-            var self = this;
+            return this._super().then(this._initializeWidgets.bind(this));
+        },
 
-            self.initial_render = true;
-            var filter_data_selected = {};
+        _initializeWidgets: async function() {
+            this.filterValues = await this._getFilterValues();
+            this._renderFilters();
+            this._initializeSelect2();
+            this._fetchData();
+        },
 
-            var dt = new Date();
-            dt.setDate(1);
-            filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-            dt.setMonth(dt.getMonth() + 1);
-            dt.setDate(0);
-            filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-
-            rpc.query({
+        _getFilterValues: function() {
+            return rpc.query({
                 model: 'hr.employee.report',
-                method: 'create',
-                args: [ filter_data_selected ]
-            }).then(function(t_res) {
-                console.log(t_res)
-                self.wizard_id = t_res;
-                self.load_data(self.initial_render);
-            });
-            
-        },
-
-        load_data: function(initial_render = true) {
-            var self = this;
-            debugger
-            self.$(".categ").empty();
-            $('div.o_action_manager').css('overflow-y', 'auto');
-            self.$('.filter_view_tb').html(QWeb.render('HR_filter'));
-            self.$('.table_view_tb').html(QWeb.render('HR_detail'));
-            
-
-            // try{
-            //     var self = this;
-            //     self._rpc({
-            //         model: 'hr.employee.report',
-            //         method: 'view_report',
-            //         args: [[this.wizard_id]],
-            //     }).then(function(datas) {
-            //         let datas = sessionStorage.setItem('reportdata', JSON.stringify(datas));
-            //         let dict = {
-            //         }
-            //         console.log(datas)
-
-            //         if (initial_render) {
-            //             
-            //         }
-
-            //         
-            //         reportdata = datas
-            //     });
-            // } catch (el) {
-            //     window.location.href
-            // }
-        },
-
-        _onFilterDate: function(ev) {
-            ev.preventDefault();
-            $(ev.target).parents().find('ul.o_date_filter').find('li > a.selected').removeClass('selected');
-            if (!$('.o_account_reports_custom-dates').hasClass('d-none')) {
-                $('.o_account_reports_custom-dates').addClass('d-none');
-            }
-            if ($(ev.target).is('a')) {
-                $(ev.target).addClass('selected');
-            }
-            else {
-                $(ev.target).find('a').addClass('selected');
-            }
-            var title = $(ev.target).parents().find('ul.o_date_filter').find('li > a.selected').parent().attr('title');
-            $('.date_caret').text(title);
-            var custom_dates = $(ev.target).parents().find('ul.o_filters_menu').find('.o_account_reports_custom-dates');
-            custom_dates.addClass('d-none');
-            var custom_comp_dates = $(ev.target).parents().find('ul.o_filters_comp_menu').find('.o_account_reports_custom-dates');
-            custom_comp_dates.addClass('d-none');
-            $('.date_caret_comp').text(title);
-        },
-
-        clear_filter: function (event){
-            event.preventDefault();
-            var self = this;
-            $(".active-filter, .active-filter a, .clear-filter").css('display', 'none');
-
-            var filter_data_selected = {};
-
-            //Date & Comparison
-            $('.filter_date[data-value="this_month"]').click();
-
-            //Target Move
-            var post_res = document.querySelectorAll("[id='post_res']")
-            for (var i = 0; i < post_res.length; i++) {
-                post_res[i].value = "Posted"
-                post_res[i].innerHTML = "Posted"
-            }
-            filter_data_selected.target_move = "Posted"
-
-            //Others
-            filter_data_selected.comp_detail = "month"
-            filter_data_selected.comparison = 0;
-
-            //Clear All Selections
-            var search_choice = document.querySelectorAll(".select2-search-choice")
-            for (var i = 0; i < search_choice.length; i++) {
-                search_choice[i].remove()
-            }
-            var chosen = document.querySelectorAll(".select2-chosen")
-            for (var i = 0; i < chosen.length; i++) {
-                chosen[i].value = ""
-                chosen[i].innerHTML = ""
-            }
-
-
-            var dt;
-            dt = new Date();
-            dt.setDate(1);
-            filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-
-            dt.setMonth(dt.getMonth() + 1);
-            dt.setDate(0);
-            filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-
-            filter_data_selected.previous = false;
-            rpc.query({
-                model: 'hr.employee.report',
-                method: 'write',
-                args: [
-                    self.wizard_id, filter_data_selected
-                ],
-            }).then(function(res) {
-            self.initial_render = false;
-                self.load_data(self.initial_render);
+                method: 'get_filter_values',
             });
         },
 
-        apply_filter: function(event) {
-            $(".active-filter, .clear-filter").css('display', 'block');
-            $(".filter_content").css('display', 'none');
+        _renderFilters: function() {
+            this.$('.o_filter_section').html(QWeb.render('buma_hr_reports.Filters', {
+                filterValues: this.filterValues,
+            }));
+            this._bindFilterEvents();
+        },
 
-            event.preventDefault();
+        _bindFilterEvents: function() {
             var self = this;
-            self.initial_render = false;
-            var filter_data_selected = {};
-            filter_data_selected.previous = false;
-            filter_data_selected.comparison = 0;
-
-            if ($(".levels").length){
-                var level_res = document.getElementById("level_res")
-                filter_data_selected.levels = $(".levels")[1].value
-                level_res.value = $(".levels")[1].value
-                level_res.innerHTML=level_res.value;
-                if ($(".levels").value==""){
-                type_res.innerHTML="summary";
-                filter_data_selected.type = "Summary"
-                }
-            }
-
-            var dt;
-            var list_item_selected = $('ul.o_date_filter').find('li > a.selected');
-            filter_data_selected.date_from = "";
-            filter_data_selected.date_to = "";
             
-            if (list_item_selected.length) {
-                var filter_value = $('ul.o_date_filter').find('li > a.selected').parent().data('value');
-                $(".date-filter").css('display', 'initial');
-
-                if (filter_value == "this_month") {
-                    dt = new Date();
-                    dt.setDate(1);
-                    filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-                    dt.setMonth(dt.getMonth() + 1);
-                    dt.setDate(0);
-                    filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "month";
-                }
-                else if (filter_value == "this_quarter") {
-                    dt = new moment();
-                    filter_data_selected.date_from = dt.startOf('quarter').format('YYYY-MM-DD');
-                    filter_data_selected.date_to = dt.endOf('quarter').format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "quarter";
-                }
-                else if (filter_value == "this_financial_year") {
-                    dt = new Date();
-                    var year = dt.getFullYear();
-                    filter_data_selected.date_from = moment([year]).startOf('year').format('YYYY-MM-DD');
-                    filter_data_selected.date_to = moment([year]).endOf('year').format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "year";
-
-                }
-                else if (filter_value == "last_month") {
-                    dt = new Date();
-                    dt.setDate(1);
-                    filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-                    dt.setMonth(dt.getMonth() + 1);
-                    dt.setDate(0);
-                    filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "lastmonth";
-                }
-                else if (filter_value == "last_quarter") {
-                    dt = new moment();
-                    filter_data_selected.date_from = dt.startOf('quarter').format('YYYY-MM-DD');
-                    filter_data_selected.date_to = dt.endOf('quarter').format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "lastquarter";
-                }
-                else if (filter_value == "last_year") {
-                    dt = new Date();
-                    var year = dt.getFullYear();
-                    filter_data_selected.date_from = moment([year]).startOf('year').format('YYYY-MM-DD');
-                    filter_data_selected.date_to = moment([year]).endOf('year').format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "lastyear";
-                }
-                else if (filter_value == "today") {
-                    dt = new Date();
-                    dt.setDate(1);
-                    filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-                    dt.setDate(0);
-                    filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "today";
-                }
-                else if (filter_value == "no") {
-                    dt = new Date();
-                    filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-                    filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-                    filter_data_selected.comp_detail = "month";
-                }
-            }
-            else if (list_item_selected.length == 0) {
-                dt = new Date();
-                filter_data_selected.date_from = moment(dt).format('YYYY-MM-DD');
-                filter_data_selected.date_to = moment(dt).format('YYYY-MM-DD');
-                if ($("#date_from").val()) {
-                    var dateString = $("#date_from").val();
-                    filter_data_selected.date_from = dateString;
-                }
-                if ($("#date_to").val()) {
-                    var dateString = $("#date_to").val();
-                    filter_data_selected.date_to = dateString;
-                }
-                filter_data_selected.comp_detail = "custom";                
-            }        
-
-
-            if ($("#prev").val()) {
-                var prev = $("#prev").val();
-                filter_data_selected.comparison = prev;
-                filter_data_selected.previous = true;
-                document.getElementById("last").value = null;
-                document.getElementById("prev").value = null;
-            }
-
-            if ($("#last").val()) {
-                var last = $("#last").val();
-                filter_data_selected.comparison = last;
-                filter_data_selected.previous = false;
-                document.getElementById("prev").value = null;
-                document.getElementById("last").value = null;
-            }
-
-            if (filter_data_selected.comparison != 0) {
-                $(".comparison-filter").css('display', 'initial');
-            } 
-
-            rpc.query({
-                model: 'hr.employee.report',
-                method: 'write',
-                args: [
-                    self.wizard_id, filter_data_selected
-                ],
-            }).then(function(res) {
-                self.initial_render = false;
-                self.load_data(self.initial_render);
+            // Toggle filter panel
+            this.$('.o_toggle_filter').off('click').on('click', function() {
+                self._toggleFilterPanel();
+            });
+            
+            // Close filter panel
+            this.$('.o_close_filter').off('click').on('click', function() {
+                self._closeFilterPanel();
             });
         },
 
-        // ===============================================================================
-
-
-        onClickSortLine: function(ev) {
-            ev.preventDefault();
+        _initializeSelect2: function() {
             var self = this;
-            var sort = ev.currentTarget.dataset.sort;
-            var sort_type = false;
-        },
-
-
-        _onAnyWhereClick: function(ev){
-             
-        },
-
-        collapse_all: function(event) {
-
-        },
-
-        show_drop_down: function(event) {
-            event.preventDefault();
-        },
-
-        _onClickFilter: function(ev) {
-            ev.preventDefault();
-        },
-
-        _onFilterCategory: function(ev) {
-            ev.preventDefault();
-        },
-
-
-        _onCustomFilter: function(ev) {
-            ev.preventDefault();
-        },
-
-        _onPrevFilter: function(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-        },
-
-        _onLastFilter: function(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-        },
-
-        print_xlsx: function() {
-            var self = this;
-            var action_title = self._title;
-            var obj = JSON.parse(sessionStorage.getItem('reportdata'));
             
-            var action = {
-                'type': 'ir_actions_dynamic_xlsx_download',
-                'data': {
-                     'model': 'hr.employee.report',
-                     'options': JSON.stringify(obj['filters']),
-                     'output_format': 'xlsx',
-                     'report_data': JSON.stringify(obj),
-                     'report_name': 'Employee Reports',
-                     'dfr_data': [],
+            var select2Config = {
+                placeholder: "Select...",
+                allowClear: true,
+                width: '100%',
+                templateResult: function(option) {
+                    if (!option.id) {
+                        return option.text;
+                    }
+                    return $('<span class="o_tag_color_0">' + option.text + '</span>');
                 },
+                templateSelection: function(option) {
+                    if (!option.id) {
+                        return option.text;
+                    }
+                    return $('<span class="o_tag o_tag_color_0"><span class="o_tag_text">' + option.text + '</span></span>');
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                }
             };
-            return self.do_action(action);
+
+            this.$('#position_select').select2($.extend({}, select2Config, {
+                placeholder: "Select positions..."
+            }));
+
+            this.$('#department_select').select2($.extend({}, select2Config, {
+                placeholder: "Select departments..."
+            }));
+
+            this.$('#project_select').select2($.extend({}, select2Config, {
+                placeholder: "Select projects..."
+            }));
+
+            this.$('#poh_select').select2($.extend({}, select2Config, {
+                placeholder: "Select point of hires..."
+            }));
         },
 
-        
+        _fetchData: function() {
+            framework.blockUI();
+            var offset = (this.currentPage - 1) * this.pageSize;
+            
+            return Promise.all([
+                rpc.query({
+                    model: 'hr.employee.report',
+                    method: 'get_applicant_data',
+                    args: [this.filters, offset, this.pageSize],
+                }),
+                rpc.query({
+                    model: 'hr.employee.report',
+                    method: 'get_applicant_count',
+                    args: [this.filters],
+                })
+            ]).then((results) => {
+                var data = results[0];
+                this.totalRecords = results[1];
+                this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+                
+                this._renderContent(data);
+                this._renderPagination();
+                framework.unblockUI();
+            });
+        },
 
+        _renderContent: function(data) {
+            this.$('.o_content_section').html(QWeb.render('buma_hr_reports.Content', {
+                data: data,
+                currentPage: this.currentPage,
+                pageSize: this.pageSize,
+                totalRecords: this.totalRecords,
+                totalPages: this.totalPages,
+                startRecord: ((this.currentPage - 1) * this.pageSize) + 1,
+                endRecord: Math.min(this.currentPage * this.pageSize, this.totalRecords),
+            }));
+        },
+
+        _renderPagination: function() {
+            this.$('.o_pagination_section').html(QWeb.render('buma_hr_reports.Pagination', {
+                currentPage: this.currentPage,
+                totalPages: this.totalPages,
+                totalRecords: this.totalRecords,
+                startRecord: ((this.currentPage - 1) * this.pageSize) + 1,
+                endRecord: Math.min(this.currentPage * this.pageSize, this.totalRecords),
+                hasPrevious: this.currentPage > 1,
+                hasNext: this.currentPage < this.totalPages,
+                pages: this._getPageNumbers(),
+            }));
+        },
+
+        _getPageNumbers: function() {
+            var pages = [];
+            var start = Math.max(1, this.currentPage - 2);
+            var end = Math.min(this.totalPages, start + 4);
+            
+            if (end - start < 4) {
+                start = Math.max(1, end - 4);
+            }
+            
+            for (var i = start; i <= end; i++) {
+                pages.push({
+                    number: i,
+                    current: i === this.currentPage
+                });
+            }
+            return pages;
+        },
+
+        _toggleFilterPanel() {
+                const filterPanel = document.getElementById('filterPanel');
+                const toggleBtn = document.querySelector('.o_toggle_filter');
+                
+                if (filterPanel.style.display === 'none' || filterPanel.style.display === '') {
+                    filterPanel.style.display = 'block';
+                    toggleBtn.innerHTML = '<i class="fa fa-filter mr-1"></i>Hide Filter';
+                    toggleBtn.classList.remove('btn-outline-primary');
+                    toggleBtn.classList.add('btn-primary');
+                    toggleBtn.style.borderColor = '#667eea';
+                    toggleBtn.style.backgroundColor = '#667eea';
+                    toggleBtn.style.color = 'white';
+                } else {
+                    filterPanel.style.display = 'none';
+                    toggleBtn.innerHTML = '<i class="fa fa-filter mr-1"></i>Filter';
+                    toggleBtn.classList.remove('btn-primary');
+                    toggleBtn.classList.add('btn-outline-primary');
+                    toggleBtn.style.borderColor = '#6c757d';
+                    toggleBtn.style.backgroundColor = 'transparent';
+                    toggleBtn.style.color = '#6c757d';
+                }
+            },
+            
+        _closeFilterPanel() {
+            const filterPanel = document.getElementById('filterPanel');
+            const toggleBtn = document.querySelector('.o_toggle_filter');
+            
+            filterPanel.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fa fa-filter mr-1"></i>Filter';
+            toggleBtn.classList.remove('btn-primary');
+            toggleBtn.classList.add('btn-outline-primary');
+            toggleBtn.style.borderColor = '#6c757d';
+            toggleBtn.style.backgroundColor = 'transparent';
+            toggleBtn.style.color = '#6c757d';
+        },
+
+        _onApplyFilter: function(ev) {
+            ev.preventDefault();
+            
+            this.filters = {
+                position_ids: this.$('#position_select').val() || [],
+                department_ids: this.$('#department_select').val() || [],
+                project_ids: this.$('#project_select').val() || [],
+                point_of_hire_ids: this.$('#poh_select').val() || [],
+                candidate_name: this.$('.o_candidate_name_filter').val(),
+            };
+
+            this.filters.position_ids = this.filters.position_ids.map(id => parseInt(id));
+            this.filters.department_ids = this.filters.department_ids.map(id => parseInt(id));
+            this.filters.project_ids = this.filters.project_ids.map(id => parseInt(id));
+            this.filters.point_of_hire_ids = this.filters.point_of_hire_ids.map(id => parseInt(id));
+            
+            this.currentPage = 1;
+            this._fetchData();
+        },
+
+        _onResetFilter: function() {
+            this.$('#position_select').val(null).trigger('change');
+            this.$('#department_select').val(null).trigger('change');
+            this.$('#project_select').val(null).trigger('change');
+            this.$('#poh_select').val(null).trigger('change');
+            this.$('.o_candidate_name_filter').val('');
+            
+            this.filters = {};
+            this.currentPage = 1;
+            this._fetchData();
+        },
+
+        _onPrevPage: function(ev) {
+            ev.preventDefault();
+            if (this.currentPage > 1) {
+                this.currentPage--;
+                this._fetchData();
+            }
+        },
+
+        _onNextPage: function(ev) {
+            ev.preventDefault();
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+                this._fetchData();
+            }
+        },
+
+        _onGoToPage: function(ev) {
+            ev.preventDefault();
+            var page = parseInt($(ev.currentTarget).data('page'));
+            if (page !== this.currentPage && page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+                this._fetchData();
+            }
+        },
+
+        _onExportXlsx: function() {
+            framework.blockUI();
+            return rpc.query({
+                model: 'hr.employee.report',
+                method: 'get_xlsx_report',
+                args: [this.filters],
+            }).then(function(result) {
+                framework.unblockUI();
+                window.location = '/web/content/' + result;
+            });
+        },
     });
-    core.action_registry.add("hr_em_r", employeeReports);
-    return employeeReports;
+
+    core.action_registry.add('employee_reports', EmployeeReports);
+    return EmployeeReports;
 });

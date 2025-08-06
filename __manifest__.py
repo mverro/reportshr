@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Buma HR Reports",
+    'name': " HR Reports",
 
     'summary': """
-        Buma HR Reports""",
+         HR Reports""",
 
     'description': """
-        Buma HR Reports
+         HR Reports
     """,
 
     'author': "Azzam Adnan/hashmicro",
-    'website': "http://www.hashmicro.com",
+    'website': "",
     'category': 'Human Resources',
     'version': '0.1',
-    'depends': ['base','hr_recruitment'],
+    'depends': [
+        'base',
+        'hr',
+        'hr_recruitment',
+        'web',
+        'report_xlsx',
+        ],
     'data': [
         'security/ir.model.access.csv',
         
